@@ -71,9 +71,9 @@ public class JwtService {
         return true;
     }
 
-    public RefreshResponse generateAccessRefreshTokens(@NonNull User user, Long deviceId, ERole role) {
+    public RefreshResponse generateAccessRefreshTokens(String username, Long userId, Long deviceId, ERole role) {
         RMapCache<Long, String> map = redissonClient.getMapCache(jwtStorageName);
-        String newAccessToken = generateAccessToken(user, deviceId, role);
+        String newAccessToken = generateAccessToken(username, userId, deviceId, role);
         map.put(deviceId,
                 newAccessToken,
                 accessTokenExpiration.toMinutes(),
@@ -81,30 +81,30 @@ public class JwtService {
 
         return new RefreshResponse(
                 newAccessToken,
-                generateRefreshToken(user, deviceId, role));
+                generateRefreshToken(username, userId, deviceId, role));
     }
 
-    public String generateAccessToken(@NonNull User user, Long deviceId, ERole role) {
+    public String generateAccessToken(String username, Long userId, Long deviceId, ERole role) {
         final Instant accessExpirationInstant =
                 Instant.now().plus(accessTokenExpiration);
         final Date accessExpiration = Date.from(accessExpirationInstant);
         return Jwts.builder()
                 .setExpiration(accessExpiration)
                 .signWith(SignatureAlgorithm.HS512, jwtAccessSecret)
-                .setSubject(user.getUsername())
-                .claim(USER_ID_CLAIM, user.getId().toString())
+                .setSubject(username)
+                .claim(USER_ID_CLAIM, userId.toString())
                 .claim(DEVICE_ID_CLAIM, deviceId.toString())
                 .claim(ROLE_ID_CLAIM, role)
                 .compact();
     }
 
-    public String generateRefreshToken(@NonNull User user, Long deviceId, ERole role) {
+    public String generateRefreshToken(String username, Long userId, Long deviceId, ERole role) {
         final Instant refreshExpirationInstant = Instant.now().plus(refreshTokenExpiration);
         final Date refreshExpiration = Date.from(refreshExpirationInstant);
         return Jwts.builder()
-                .setSubject(user.getUsername())
+                .setSubject(username)
                 .setExpiration(refreshExpiration)
-                .claim(USER_ID_CLAIM, user.getId().toString())
+                .claim(USER_ID_CLAIM, userId.toString())
                 .claim(DEVICE_ID_CLAIM, deviceId.toString())
                 .claim(ROLE_ID_CLAIM, role)
                 .signWith(SignatureAlgorithm.HS512, jwtRefreshSecret)
