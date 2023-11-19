@@ -1,6 +1,5 @@
 package com.anst.sd.api.security;
 
-import com.anst.sd.api.app.api.AuthErrorMessages;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
