@@ -5,7 +5,7 @@
 
     <groupId>io.github.anst-tracker</groupId>
     <artifactId>security</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.1</version>
     <build>
         <plugins>
             <plugin>
@@ -156,7 +156,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-            <version>3.1.5</version>
+            <version>3.0.7</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
