@@ -19,8 +19,8 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class AuthTokenFilter extends OncePerRequestFilter {
-    private final RedissonClient redissonClient;
     private static final String AUTHORIZATION = "Authorization";
+    private final RedissonClient redissonClient;
     private final JwtService jwtService;
     @Value("${security.jwt.storage}")
     private String jwtStorageName;
