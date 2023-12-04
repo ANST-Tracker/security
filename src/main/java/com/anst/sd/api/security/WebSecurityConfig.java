@@ -1,6 +1,5 @@
 package com.anst.sd.api.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +32,6 @@ public class WebSecurityConfig {
             "/v3/api-docs/**",
     };
     private final AuthTokenFilter jwtFilter;
-    private final ObjectMapper objectMapper;
 
     @Bean
     @Order(SecurityProperties.BASIC_AUTH_ORDER)

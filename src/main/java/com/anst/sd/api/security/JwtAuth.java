@@ -13,7 +13,6 @@ import java.util.Collections;
 @Setter
 @Builder
 public class JwtAuth implements Authentication {
-
     private boolean authenticated;
     private String username;
     private Long userId;
@@ -54,5 +53,4 @@ public class JwtAuth implements Authentication {
     public String getName() {
         return username;
     }
-
 }

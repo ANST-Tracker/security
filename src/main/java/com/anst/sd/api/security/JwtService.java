@@ -71,7 +71,7 @@ public class JwtService {
         return true;
     }
 
-    public RefreshResponse generateAccessRefreshTokens(String username, Long userId, Long deviceId, ERole role) {
+    public JwtResponse generateAccessRefreshTokens(String username, Long userId, Long deviceId, ERole role) {
         RMapCache<Long, String> map = redissonClient.getMapCache(jwtStorageName);
         String newAccessToken = generateAccessToken(username, userId, deviceId, role);
         map.put(deviceId,
@@ -79,7 +79,7 @@ public class JwtService {
                 accessTokenExpiration.toMinutes(),
                 TimeUnit.MINUTES);
 
-        return new RefreshResponse(
+        return new JwtResponse(
                 newAccessToken,
                 generateRefreshToken(username, userId, deviceId, role));
     }
