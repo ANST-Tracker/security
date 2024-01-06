@@ -46,8 +46,8 @@ jobs:
             <servers>
               <server>
                 <id>ossrh</id>
-                <username>\${{ secrets.SONATYPE_USERNAME }}</username>
-                <password>\${{ secrets.SONATYPE_PASSWORD }}</password>
+                <username>eridiumprojects</username>
+                <password>RelaxWMV1337!</password>
               </server>
             </servers>
           </settings>
