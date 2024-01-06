@@ -1,4 +1,4 @@
-name: Release
+name: Deploy on Maven Central Repository
 on:
   push:
     branches:
@@ -46,14 +46,14 @@ jobs:
             <servers>
               <server>
                 <id>ossrh</id>
-                <username>eridiumprojects</username>
-                <password>RelaxWMV1337!</password>
+                <username>${{ secrets.SONATYPE_USERNAME }}</username>
+                <password>${{ secrets.SONATYPE_PASSWORD }}</password>
               </server>
             </servers>
           </settings>
           EOF
 
-      - name: Release to Maven repo
+      - name: Deploy to Maven Central
         run: |
           export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED"
           mvn deploy
