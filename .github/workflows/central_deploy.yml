@@ -31,7 +31,7 @@ jobs:
           # -B Batch mode (do not ask for user input), just in case
           # -P activate profile
           export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED"
-          mvn deploy
+          mvn -U -B clean deploy -P release
         env:
           SIGN_KEY_PASS: ${{ secrets.GPG_PASSPHRASE }}
           OSSRH_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
