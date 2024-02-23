@@ -1,4 +1,4 @@
-package com.anst.sd.api.security;
+package com.anst.sd.api.security.app.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

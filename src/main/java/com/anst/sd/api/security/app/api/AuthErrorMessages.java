@@ -1,4 +1,4 @@
-package com.anst.sd.api.security;
+package com.anst.sd.api.security.app.api;
 
 public class AuthErrorMessages {
     public static final String INVALID_PASSWORD = "Invalid password";
@@ -14,4 +14,6 @@ public class AuthErrorMessages {
     public static final String MALFORMED_JWT = "Malformed jwt";
     public static final String INVALID_SIGNATURE = "Invalid signature";
     public static final String INVALID_TOKEN = "Invalid token";
+
+    private AuthErrorMessages() {}
 }

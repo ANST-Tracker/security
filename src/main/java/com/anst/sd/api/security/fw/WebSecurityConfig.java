@@ -1,5 +1,6 @@
-package com.anst.sd.api.security;
+package com.anst.sd.api.security.fw;
 
+import com.anst.sd.api.security.app.impl.AuthTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
@@ -18,19 +19,25 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 @ComponentScan(basePackageClasses = WebSecurityConfig.class)
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
-
     private static final String[] publicUrls = new String[]{
-            "/auth/**",
+            "/auth/refresh",
+            "/auth/code/send",
             "/version",
             "/swagger-ui/**",
             "/v3/api-docs/**",
     };
+    public static final List<String> telegramAuthUrls = List.of(
+        "/auth/signup",
+        "/auth/signin"
+    );
     private final AuthTokenFilter jwtFilter;
 
     @Bean

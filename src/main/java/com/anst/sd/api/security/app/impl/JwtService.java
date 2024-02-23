@@ -1,5 +1,9 @@
-package com.anst.sd.api.security;
+package com.anst.sd.api.security.app.impl;
 
+import com.anst.sd.api.security.app.api.AuthErrorMessages;
+import com.anst.sd.api.security.app.api.JwtResponse;
+import com.anst.sd.api.security.domain.ERole;
+import com.anst.sd.api.security.domain.JwtAuth;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -24,6 +28,7 @@ public class JwtService {
     public static final String USER_ID_CLAIM = "userId";
     public static final String DEVICE_ID_CLAIM = "deviceId";
     public static final String ROLE_ID_CLAIM = "role";
+    public static final String TELEGRAM_ID_CLAIM = "telegramId";
     private final String jwtAccessSecret;
     private final String jwtRefreshSecret;
     private final String jwtStorageName;
@@ -98,6 +103,17 @@ public class JwtService {
                 .compact();
     }
 
+    public String generateTelegramIdAccessToken(String telegramId) {
+        final Instant accessExpirationInstant =
+            Instant.now().plus(accessTokenExpiration);
+        final Date accessExpiration = Date.from(accessExpirationInstant);
+        return Jwts.builder()
+            .setExpiration(accessExpiration)
+            .signWith(SignatureAlgorithm.HS512, jwtAccessSecret)
+            .claim(TELEGRAM_ID_CLAIM, telegramId)
+            .compact();
+    }
+
     public String generateRefreshToken(String username, Long userId, Long deviceId, ERole role) {
         final Instant refreshExpirationInstant = Instant.now().plus(refreshTokenExpiration);
         final Date refreshExpiration = Date.from(refreshExpirationInstant);
@@ -155,6 +171,10 @@ public class JwtService {
 
         public String getUserId() {
             return claims.get(USER_ID_CLAIM, String.class);
+        }
+
+        public String getTelegramId() {
+            return claims.get(TELEGRAM_ID_CLAIM, String.class);
         }
 
         public String getDeviceId() {
