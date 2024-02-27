@@ -26,7 +26,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebSecurityConfig {
 
     private static final String[] publicUrls = new String[]{
-            "**/auth/**",
+            "/auth/**",
             "**/version",
             "**/swagger-ui/**",
             "**/v3/api-docs/",
