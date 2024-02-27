@@ -2,7 +2,7 @@ name: Deploy on Maven Central Repository
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
 
 jobs:
   release-maven-central:
