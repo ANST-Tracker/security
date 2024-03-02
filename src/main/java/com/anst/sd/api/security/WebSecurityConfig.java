@@ -27,9 +27,9 @@ public class WebSecurityConfig {
 
     private static final String[] publicUrls = new String[]{
             "/auth/**",
-            "**/version",
-            "**/swagger-ui/**",
-            "**/v3/api-docs/",
+            "/version",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
     };
     private final AuthTokenFilter jwtFilter;
 
