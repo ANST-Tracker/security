@@ -39,7 +39,7 @@ public class WebSecurityConfig {
         "/auth/signin"
     );
     public static final List<String> TWO_AUTH_URLS = List.of(
-        "/user/update");
+        "/user");
 
     private final AuthTokenFilter jwtFilter;
 
