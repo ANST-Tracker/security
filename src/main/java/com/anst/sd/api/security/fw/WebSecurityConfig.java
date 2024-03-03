@@ -27,17 +27,20 @@ import java.util.List;
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
-    private static final String[] publicUrls = new String[]{
+    private static final String[] PUBLIC_URLS = new String[]{
             "/auth/refresh",
             "/auth/code/send",
             "/version",
             "/swagger-ui/**",
             "/v3/api-docs/**",
     };
-    public static final List<String> telegramAuthUrls = List.of(
+    public static final List<String> TELEGRAM_AUTH_URLS = List.of(
         "/auth/signup",
         "/auth/signin"
     );
+    public static final List<String> TWO_AUTH_URLS = List.of(
+        "/user/update");
+
     private final AuthTokenFilter jwtFilter;
 
     @Bean
@@ -51,7 +54,7 @@ public class WebSecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers(publicUrls).permitAll()
+                .requestMatchers(PUBLIC_URLS).permitAll()
                 .and()
                 .authorizeHttpRequests()
                 .anyRequest().authenticated()
