@@ -1,4 +1,4 @@
-package com.anst.sd.api.security;
+package com.anst.sd.api.security.domain;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +18,7 @@ public class JwtAuth implements Authentication {
     private Long userId;
     private Long deviceId;
     private ERole role;
+    private String telegramId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

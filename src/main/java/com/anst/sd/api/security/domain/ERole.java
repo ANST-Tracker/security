@@ -1,4 +1,4 @@
-package com.anst.sd.api.security;
+package com.anst.sd.api.security.domain;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

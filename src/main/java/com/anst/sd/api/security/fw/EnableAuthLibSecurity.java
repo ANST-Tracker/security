@@ -1,4 +1,4 @@
-package com.anst.sd.api.security;
+package com.anst.sd.api.security.fw;
 
 import org.springframework.context.annotation.Import;
 
