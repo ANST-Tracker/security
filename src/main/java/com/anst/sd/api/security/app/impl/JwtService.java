@@ -110,6 +110,7 @@ public class JwtService {
         return Jwts.builder()
             .setExpiration(accessExpiration)
             .signWith(SignatureAlgorithm.HS512, jwtAccessSecret)
+            .setSubject(telegramId)
             .claim(TELEGRAM_ID_CLAIM, telegramId)
             .compact();
     }
