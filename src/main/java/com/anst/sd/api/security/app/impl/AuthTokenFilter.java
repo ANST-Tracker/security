@@ -102,14 +102,17 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     }
 
     private void setSecurityContext(JwtService.ClaimsHolder basicClaims, JwtService.ClaimsHolder telegramClaims) {
-        final JwtAuth authInfo = JwtAuth.builder()
-            .username(basicClaims.getUsername())
-            .userId(Long.parseLong(basicClaims.getUserId()))
-            .deviceId(Long.parseLong(basicClaims.getDeviceId()))
-            .role(basicClaims.getRole())
-            .telegramId(telegramClaims == null ? basicClaims.getTelegramId() : telegramClaims.getTelegramId())
-            .authenticated(true)
-            .build();
+        final JwtAuth authInfo = new JwtAuth();
+        authInfo.setAuthenticated(true);
+        if (basicClaims != null) {
+            authInfo.setUsername(basicClaims.getUsername());
+            authInfo.setUserId(Long.parseLong(basicClaims.getUserId()));
+            authInfo.setDeviceId(Long.parseLong(basicClaims.getDeviceId()));
+            authInfo.setRole(basicClaims.getRole());
+        }
+        if (telegramClaims != null) {
+            authInfo.setTelegramId(telegramClaims.getTelegramId());
+        }
         SecurityContextHolder.getContext().setAuthentication(authInfo);
     }
 

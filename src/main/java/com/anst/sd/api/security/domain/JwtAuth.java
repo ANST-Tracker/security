@@ -1,8 +1,6 @@
 package com.anst.sd.api.security.domain;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -12,6 +10,8 @@ import java.util.Collections;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class JwtAuth implements Authentication {
     private boolean authenticated;
     private String username;
