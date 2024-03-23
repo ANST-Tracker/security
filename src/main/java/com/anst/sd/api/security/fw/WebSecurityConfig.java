@@ -28,11 +28,11 @@ import java.util.List;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
     private static final String[] PUBLIC_URLS = new String[]{
-            "/auth/refresh",
-            "/auth/code/send",
-            "/version",
-            "/swagger-ui/**",
-            "/v3/api-docs/**",
+        "/auth/refresh",
+        "/auth/code/**",
+        "/version",
+        "/swagger-ui/**",
+        "/v3/api-docs/**",
     };
     public static final List<String> TELEGRAM_AUTH_URLS = List.of(
         "/auth/signup",
