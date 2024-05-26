@@ -33,6 +33,7 @@ public class WebSecurityConfig {
         "/version",
         "/swagger-ui/**",
         "/v3/api-docs/**",
+        "/internal/**"
     };
     public static final List<String> TELEGRAM_AUTH_URLS = List.of(
         "/auth/signup",
