@@ -14,10 +14,12 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Optional.ofNullable;
@@ -74,6 +76,14 @@ public class JwtService {
             }
         }
         return true;
+    }
+
+    public void disableAccessTokens(List<Long> devicesIds) {
+        if (CollectionUtils.isEmpty(devicesIds)) {
+            return;
+        }
+        RMapCache<Long, String> map = redissonClient.getMapCache(jwtStorageName);
+        devicesIds.forEach(map::remove);
     }
 
     public JwtResponse generateAccessRefreshTokens(String username, Long userId, Long deviceId, ERole role) {
