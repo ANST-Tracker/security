@@ -29,6 +29,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     @Value("${security.jwt.storage}")
     private String jwtStorageName;
+    @Value("${settings.dev-mode}")
+    private boolean devMode;
 
     @Override
     protected void doFilterInternal(
@@ -36,14 +38,18 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         @NonNull HttpServletResponse response,
         @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
+        if (!devMode && request.getHeader(HttpHeaders.USER_AGENT) == null) {
+            throw new AuthException("No user agent provided");
+        }
+
         String basicAuthToken = parseJwt(request, AUTHORIZATION);
         String telegramAuthToken = parseJwt(request, AUTHORIZATION_TELEGRAM);
         if (isResolvableByTwoAuth(request)) {
-            resolveDoubleAuthentication(basicAuthToken, telegramAuthToken);
+            resolveDoubleAuthentication(request, basicAuthToken, telegramAuthToken);
         } else if (StringUtils.hasText(basicAuthToken) && !isResolvableByTelegramAuth(request)) {
-            resolveBasicAuthentication(basicAuthToken);
+            resolveBasicAuthentication(request, basicAuthToken);
         } else if (StringUtils.hasText(telegramAuthToken) && isResolvableByTelegramAuth(request)) {
-            resolveTelegramAuthentication(telegramAuthToken);
+            resolveTelegramAuthentication(request, telegramAuthToken);
         }
         filterChain.doFilter(request, response);
     }
@@ -52,16 +58,23 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     // = Implementation
     // ===================================================================================================================
 
-    private void resolveTelegramAuthentication(String token) {
+    private void resolveTelegramAuthentication(HttpServletRequest request, String token) {
         validateTelegramClaims(token);
         JwtService.ClaimsHolder claims = getTokenClaims(token);
-        setSecurityContext(null, claims);
+        setSecurityContext(request, null, claims);
     }
 
-    private void resolveBasicAuthentication(String token) {
+    private void resolveBasicAuthentication(HttpServletRequest request, String token) {
         validateBasicClaims(token);
         JwtService.ClaimsHolder claims = getTokenClaims(token);
-        setSecurityContext(claims, null);
+        setSecurityContext(request, claims, null);
+    }
+
+    private void resolveDoubleAuthentication(HttpServletRequest request, String basicToken, String telegramToken) {
+        validateBasicClaims(basicToken);
+        JwtService.ClaimsHolder basicClaims = getTokenClaims(basicToken);
+        JwtService.ClaimsHolder telegramClaims = getTokenClaims(telegramToken);
+        setSecurityContext(request, basicClaims, telegramClaims);
     }
 
     private void validateBasicClaims(String token) {
@@ -79,13 +92,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         }
     }
 
-    private void resolveDoubleAuthentication(String basicToken, String telegramToken) {
-        validateBasicClaims(basicToken);
-        JwtService.ClaimsHolder basicClaims = getTokenClaims(basicToken);
-        JwtService.ClaimsHolder telegramClaims = getTokenClaims(telegramToken);
-        setSecurityContext(basicClaims, telegramClaims);
-    }
-
     private String parseJwt(HttpServletRequest request, String headerName) {
         String headerAuth = request.getHeader(headerName);
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
@@ -101,7 +107,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         return null;
     }
 
-    private void setSecurityContext(JwtService.ClaimsHolder basicClaims, JwtService.ClaimsHolder telegramClaims) {
+    private void setSecurityContext(HttpServletRequest request, JwtService.ClaimsHolder basicClaims,
+        JwtService.ClaimsHolder telegramClaims) {
         final JwtAuth authInfo = new JwtAuth();
         authInfo.setAuthenticated(true);
         if (basicClaims != null) {
@@ -113,6 +120,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         if (telegramClaims != null) {
             authInfo.setTelegramId(telegramClaims.getTelegramId());
         }
+        authInfo.setRemoteAddress(request.getRemoteAddr());
+        authInfo.setUserAgent(request.getHeader(HttpHeaders.USER_AGENT));
         SecurityContextHolder.getContext().setAuthentication(authInfo);
     }
 

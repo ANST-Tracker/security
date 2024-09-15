@@ -19,6 +19,8 @@ public class JwtAuth implements Authentication {
     private Long deviceId;
     private ERole role;
     private String telegramId;
+    private String userAgent;
+    private String remoteAddress;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
