@@ -40,7 +40,8 @@ public class WebSecurityConfig {
         "/auth/signin"
     );
     public static final List<String> TWO_AUTH_URLS = List.of(
-        "/user");
+        "/auth/change-password",
+        "/auth/change-telegram-id");
 
     private final AuthTokenFilter jwtFilter;
 
