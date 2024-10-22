@@ -72,6 +72,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     private void resolveDoubleAuthentication(HttpServletRequest request, String basicToken, String telegramToken) {
         validateBasicClaims(basicToken);
+        validateTelegramClaims(telegramToken);
         JwtService.ClaimsHolder basicClaims = getTokenClaims(basicToken);
         JwtService.ClaimsHolder telegramClaims = getTokenClaims(telegramToken);
         setSecurityContext(request, basicClaims, telegramClaims);
