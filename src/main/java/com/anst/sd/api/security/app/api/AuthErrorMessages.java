@@ -14,6 +14,7 @@ public class AuthErrorMessages {
     public static final String MALFORMED_JWT = "Malformed jwt";
     public static final String INVALID_SIGNATURE = "Invalid signature";
     public static final String INVALID_TOKEN = "Invalid token";
+    public static final String TELEGRAM_ID_ALREADY_USED = "Telegram Id is already in use";
 
     private AuthErrorMessages() {}
 }
