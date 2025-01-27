@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -114,7 +115,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         authInfo.setAuthenticated(true);
         if (basicClaims != null) {
             authInfo.setUsername(basicClaims.getUsername());
-            authInfo.setUserId(Long.parseLong(basicClaims.getUserId()));
+            authInfo.setUserId(UUID.fromString(basicClaims.getUserId()));
             authInfo.setDeviceId(Long.parseLong(basicClaims.getDeviceId()));
             authInfo.setRole(basicClaims.getRole());
         }

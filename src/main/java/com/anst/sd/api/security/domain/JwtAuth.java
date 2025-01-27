@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -15,7 +16,7 @@ import java.util.Collections;
 public class JwtAuth implements Authentication {
     private boolean authenticated;
     private String username;
-    private Long userId;
+    private UUID userId;
     private Long deviceId;
     private ERole role;
     private String telegramId;
