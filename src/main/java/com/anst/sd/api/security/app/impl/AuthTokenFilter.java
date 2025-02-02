@@ -81,8 +81,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     private void validateBasicClaims(String token) {
         JwtService.ClaimsHolder claims = getTokenClaims(token);
-        RMapCache<Long, String> map = redissonClient.getMapCache(jwtStorageName);
-        if (claims == null || !token.equals(map.get(Long.parseLong(claims.getDeviceId())))) {
+        RMapCache<UUID, String> map = redissonClient.getMapCache(jwtStorageName);
+        if (claims == null || !token.equals(map.get(claims.getDeviceId()))) {
             throw new AuthException("Access Token doesn't refer to this user");
         }
     }
@@ -115,8 +115,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         authInfo.setAuthenticated(true);
         if (basicClaims != null) {
             authInfo.setUsername(basicClaims.getUsername());
-            authInfo.setUserId(UUID.fromString(basicClaims.getUserId()));
-            authInfo.setDeviceId(Long.parseLong(basicClaims.getDeviceId()));
+            authInfo.setUserId(basicClaims.getUserId());
+            authInfo.setDeviceId(basicClaims.getDeviceId());
             authInfo.setRole(basicClaims.getRole());
         }
         if (telegramClaims != null) {
