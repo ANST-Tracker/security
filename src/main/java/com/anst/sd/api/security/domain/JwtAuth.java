@@ -17,7 +17,7 @@ public class JwtAuth implements Authentication {
     private boolean authenticated;
     private String username;
     private UUID userId;
-    private Long deviceId;
+    private UUID deviceId;
     private ERole role;
     private String telegramId;
     private String userAgent;

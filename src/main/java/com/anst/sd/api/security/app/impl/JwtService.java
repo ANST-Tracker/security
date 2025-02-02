@@ -20,6 +20,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Optional.ofNullable;
@@ -66,9 +67,9 @@ public class JwtService {
         }
     }
 
-    public boolean validateAccessTokenLifetime(Long deviceId) {
+    public boolean validateAccessTokenLifetime(UUID deviceId) {
         if (blockRefreshValidAccessToken) {
-            RMapCache<Long, String> map = redissonClient.getMapCache(jwtStorageName);
+            RMapCache<UUID, String> map = redissonClient.getMapCache(jwtStorageName);
             String curAccessToken = map.get(deviceId);
             if (curAccessToken != null && validateAccessToken(map.get(deviceId))) {
                 map.remove(deviceId);
@@ -78,17 +79,17 @@ public class JwtService {
         return true;
     }
 
-    public void disableAccessTokens(List<Long> devicesIds) {
+    public void disableAccessTokens(List<UUID> devicesIds) {
         if (CollectionUtils.isEmpty(devicesIds)) {
             return;
         }
-        RMapCache<Long, String> map = redissonClient.getMapCache(jwtStorageName);
+        RMapCache<UUID, String> map = redissonClient.getMapCache(jwtStorageName);
         devicesIds.forEach(map::remove);
     }
 
-    public JwtResponse generateAccessRefreshTokens(String username, Long userId, Long deviceId, ERole role) {
-        RMapCache<Long, String> map = redissonClient.getMapCache(jwtStorageName);
-        String newAccessToken = generateAccessToken(username, userId, deviceId, role);
+    public JwtResponse generateAccessRefreshTokens(String username, UUID userId, UUID deviceId) {
+        RMapCache<UUID, String> map = redissonClient.getMapCache(jwtStorageName);
+        String newAccessToken = generateAccessToken(username, userId, deviceId);
         map.put(deviceId,
                 newAccessToken,
                 accessTokenExpiration.toMinutes(),
@@ -96,10 +97,10 @@ public class JwtService {
 
         return new JwtResponse(
                 newAccessToken,
-                generateRefreshToken(username, userId, deviceId, role));
+                generateRefreshToken(username, userId, deviceId));
     }
 
-    public String generateAccessToken(String username, Long userId, Long deviceId, ERole role) {
+    public String generateAccessToken(String username, UUID userId, UUID deviceId) {
         final Instant accessExpirationInstant =
                 Instant.now().plus(accessTokenExpiration);
         final Date accessExpiration = Date.from(accessExpirationInstant);
@@ -109,7 +110,7 @@ public class JwtService {
                 .setSubject(username)
                 .claim(USER_ID_CLAIM, userId.toString())
                 .claim(DEVICE_ID_CLAIM, deviceId.toString())
-                .claim(ROLE_ID_CLAIM, role)
+                .claim(ROLE_ID_CLAIM, ERole.USER)
                 .compact();
     }
 
@@ -125,7 +126,7 @@ public class JwtService {
             .compact();
     }
 
-    public String generateRefreshToken(String username, Long userId, Long deviceId, ERole role) {
+    public String generateRefreshToken(String username, UUID userId, UUID deviceId) {
         final Instant refreshExpirationInstant = Instant.now().plus(refreshTokenExpiration);
         final Date refreshExpiration = Date.from(refreshExpirationInstant);
         return Jwts.builder()
@@ -133,7 +134,7 @@ public class JwtService {
                 .setExpiration(refreshExpiration)
                 .claim(USER_ID_CLAIM, userId.toString())
                 .claim(DEVICE_ID_CLAIM, deviceId.toString())
-                .claim(ROLE_ID_CLAIM, role)
+                .claim(ROLE_ID_CLAIM, ERole.USER)
                 .signWith(SignatureAlgorithm.HS512, jwtRefreshSecret)
                 .compact();
     }
@@ -180,16 +181,16 @@ public class JwtService {
     public static class ClaimsHolder {
         private final Claims claims;
 
-        public String getUserId() {
-            return claims.get(USER_ID_CLAIM, String.class);
+        public UUID getUserId() {
+            return claims.get(USER_ID_CLAIM, UUID.class);
         }
 
         public String getTelegramId() {
             return claims.get(TELEGRAM_ID_CLAIM, String.class);
         }
 
-        public String getDeviceId() {
-            return claims.get(DEVICE_ID_CLAIM, String.class);
+        public UUID getDeviceId() {
+            return claims.get(DEVICE_ID_CLAIM, UUID.class);
         }
 
         public ERole getRole() {
