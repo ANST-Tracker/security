@@ -182,7 +182,7 @@ public class JwtService {
         private final Claims claims;
 
         public UUID getUserId() {
-            return claims.get(USER_ID_CLAIM, UUID.class);
+            return UUID.fromString(claims.get(USER_ID_CLAIM, String.class));
         }
 
         public String getTelegramId() {
@@ -190,7 +190,7 @@ public class JwtService {
         }
 
         public UUID getDeviceId() {
-            return claims.get(DEVICE_ID_CLAIM, UUID.class);
+            return UUID.fromString(claims.get(DEVICE_ID_CLAIM, String.class));
         }
 
         public ERole getRole() {
